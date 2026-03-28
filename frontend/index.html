@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PO System</title>
+</head>
+<body>
+
+<h2>Create PO</h2>
+
+<select id="vendor"></select>
+
+<div id="items"></div>
+
+<button onclick="addRow()">Add Product</button>
+<button onclick="submitPO()">Submit</button>
+
+<script>
+
+let products = [];
+
+async function loadData() {
+    let v = await fetch("http://127.0.0.1:8000/vendors");
+    let vendors = await v.json();
+
+    let vendorSelect = document.getElementById("vendor");
+    vendors.forEach(v => {
+        vendorSelect.innerHTML += `<option value="${v.id}">${v.name}</option>`;
+    });
+
+    let p = await fetch("http://127.0.0.1:8000/products");
+    products = await p.json();
+}
+
+function addRow() {
+    let div = document.createElement("div");
+
+    let options = products.map(p =>
+        `<option value="${p.id}">${p.name}</option>`
+    ).join("");
+
+    div.innerHTML = `
+      <select class="product">${options}</select>
+      <input type="number" class="qty" placeholder="Qty"/>
+    `;
+
+    document.getElementById("items").appendChild(div);
+}
+
+async function submitPO() {
+    let vendor = document.getElementById("vendor").value;
+
+    let rows = document.querySelectorAll("#items div");
+    let items = [];
+
+    rows.forEach(r => {
+        items.push({
+            product_id: parseInt(r.querySelector(".product").value),
+            quantity: parseInt(r.querySelector(".qty").value)
+        });
+    });
+
+    let res = await fetch("http://127.0.0.1:8000/create-po", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({vendor_id: vendor, items})
+    });
+
+    let data = await res.json();
+    alert("Total: " + data.total);
+}
+
+loadData();
+
+</script>
+
+</body>
+</html>
