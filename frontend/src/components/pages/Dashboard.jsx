@@ -11,11 +11,11 @@ export default function DashboardPage() {
   })
 
   useEffect(() => {
-    axios.get(`${API_BASE}/`)
+    axios.get(`${API_BASE}/products/`)
       .then(res => {
         setStats({
-          count: res.data.count || 0,
-          total: 0
+          count: res.data.products.length,
+          total: res.data.total || 0
         })
       })
       .catch(err => console.error('Dashboard stats error:', err))
