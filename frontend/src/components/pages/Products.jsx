@@ -53,7 +53,7 @@ export default function ProductsPage() {
   return (
     <div>
       <div className="mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">📦 Product Management</h1>
+        <h1 className="mb-4 text-4xl font-bold text-gray-900">📦 Product Management</h1>
         <p className="text-xl text-gray-600">Manage your inventory and stock levels</p>
       </div>
 
