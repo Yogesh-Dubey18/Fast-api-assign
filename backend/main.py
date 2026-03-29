@@ -8,7 +8,7 @@ app = FastAPI()
 # CORS setup to allow frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Replace with your frontend URL in production
+    allow_origins=["https://erp-frontend-mn9k.onrender.com"],  # Replace with your frontend URL in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
