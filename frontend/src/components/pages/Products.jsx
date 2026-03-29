@@ -3,12 +3,13 @@ import axios from 'axios'
 import ProductForm from '../Products/ProductForm'
 import ProductTable from '../Products/ProductTable'
 
-const API_BASE = 'https://erp-backend-fgkh.onrender.com'
+const API_BASE = 'https://erp-backend-mn9k.onrender.com'
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([])
   const [formData, setFormData] = useState({ name: '', price: '', quantity: 1 })
   const [loading, setLoading] = useState(false)
+  const [total, setTotal] = useState(0)
 
   useEffect(() => {
     fetchProducts()
@@ -18,6 +19,7 @@ export default function ProductsPage() {
     try {
       const res = await axios.get(`${API_BASE}/products/`)
       setProducts(res.data.products || [])
+      setTotal(res.data.total || 0)
     } catch (err) {
       console.error('Failed to fetch products:', err)
     }
@@ -27,12 +29,13 @@ export default function ProductsPage() {
     e.preventDefault()
     setLoading(true)
     try {
-      await axios.post(`${API_BASE}/products/`, {
+      const res = await axios.post(`${API_BASE}/products/`, {
         name: formData.name,
         price: parseFloat(formData.price),
-        quantity: parseInt(formData.quantity)
+        quantity: parseInt(formData.quantity),
       })
-      fetchProducts()
+      setProducts([...products, res.data.product])
+      setTotal(res.data.total)
       setFormData({ name: '', price: '', quantity: 1 })
     } catch (err) {
       console.error('Failed to add product:', err)
@@ -42,19 +45,24 @@ export default function ProductsPage() {
     }
   }
 
-  const handleDelete = async (index) => {
+  const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
-      // Note: Backend delete endpoint needed for full functionality
-      const newProducts = products.filter((_, i) => i !== index)
-      setProducts(newProducts)
+      try {
+        const res = await axios.delete(`${API_BASE}/products/${id}`)
+        setProducts(products.filter(p => p.id !== id))
+        setTotal(res.data.total)
+      } catch (err) {
+        console.error('Failed to delete product:', err)
+        alert('Failed to delete product. Try again.')
+      }
     }
   }
 
   return (
     <div>
-      <div className="mb-12">
-        <h1 className="mb-4 text-4xl font-bold text-gray-900">📦 Product Management</h1>
-        <p className="text-xl text-gray-600">Manage your inventory and stock levels</p>
+      <div className="mb-6">
+        <h1 className="mb-4 text-3xl font-bold">📦 Product Management</h1>
+        <p>Total Inventory Value: ₹{total.toFixed(2)}</p>
       </div>
 
       <ProductForm

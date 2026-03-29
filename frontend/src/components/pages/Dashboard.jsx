@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import StatsCard from '../Dashboard/StatsCard'
 
-const API_BASE = 'https://erp-backend-fgkh.onrender.com';
+const API_BASE = 'https://erp-backend-mn9k.onrender.com';
 
 export default function DashboardPage() {
   const [stats, setStats] = useState({
@@ -11,15 +11,20 @@ export default function DashboardPage() {
   })
 
   useEffect(() => {
-    axios.get(`${API_BASE}/products/`)
-      .then(res => {
-        setStats({
-          count: res.data.products.length,
-          total: res.data.total || 0
-        })
-      })
-      .catch(err => console.error('Dashboard stats error:', err))
+    fetchStats()
   }, [])
+
+  const fetchStats = async () => {
+    try {
+      const res = await axios.get(`${API_BASE}/products/`)
+      setStats({
+        count: res.data.products.length,
+        total: res.data.total || 0
+      })
+    } catch (err) {
+      console.error('Dashboard stats error:', err)
+    }
+  }
 
   return (
     <div>
@@ -36,10 +41,10 @@ export default function DashboardPage() {
           icon="📦"
         />
         <StatsCard
-          title="Total Value"
-          value="₹0"
+          title="Total Inventory Value"
+          value={`₹${stats.total.toFixed(2)}`}
           change={8.2}
-          icon="₹"
+          icon="💰"
         />
         <StatsCard
           title="Orders Today"
