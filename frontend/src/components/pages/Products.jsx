@@ -3,7 +3,7 @@ import axios from 'axios'
 import ProductForm from '../Products/ProductForm'
 import ProductTable from '../Products/ProductTable'
 
-const API_BASE = 'https://erp-backend-mn9k.onrender.com'
+const API_BASE = 'https://erp-backend-fgkh.onrender.com'
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([])

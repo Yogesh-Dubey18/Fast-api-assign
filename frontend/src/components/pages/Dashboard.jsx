@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import StatsCard from '../Dashboard/StatsCard'
 
-const API_BASE = 'https://erp-backend-mn9k.onrender.com';
+const API_BASE = 'https://erp-backend-fgkh.onrender.com';
 
 export default function DashboardPage() {
   const [stats, setStats] = useState({
